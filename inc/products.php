@@ -57,4 +57,19 @@ $products[104] = array(
     "paypal" => "FAKEID",
     "sizes" => array("Large", "X-Large")
     );
+
+
+  function get_list_view_html($product_id, $product){
+
+    $output="";
+    $output= $output . "<li>";
+    $output= $output . '<a href="shirt.php?id='. $product_id .'">';
+    $output= $output . '<img src="'. $product["img"] . '" alt="'. $product["name"] .'"/>';
+    $output= $output . "<p>View Details</p>";
+    $output= $output . "</a>";
+    $output= $output . "</li>";
+
+    return $output;
+  }
+
     ?>
