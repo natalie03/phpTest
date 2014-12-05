@@ -3,36 +3,52 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST'){
   $name= trim($_POST["name"]);
   $email= trim($_POST["email"]);
   $message= trim($_POST["message"]);
-  if ($name == "" OR $email OR $message){
+  if ($name == "" OR $email== "" OR $message== ""){
     echo "You must specify a value for name, email address, and message.";
     exit;
   }
 
-
   foreach( $_POST as $value){
     if( stripos($value, 'Content-Type:') !== FALSE){
-      echo "There was a problem with the information you entered."
+      echo "There was a problem with the information you entered.";
       exit;
     }
   }
   if($_POST["address"] != ""){
-    echo "Your form submission has an error."
+    echo "Your form submission has an error.";
     exit;
 
   }
+  require_once("inc/phpmailer/class.phpmailer.php");
+  $mail = new PHPMailer();
+  if (!$mail->ValidateAddress($email)){
+    echo "You must specify a valid email address.";
+    exit;
+  }
 
   $email_body = "";
-  $email_body = $email_body . "Name: " . $name . "\n";
-  $email_body = $email_body .  "Email: " . $email . "\n";
+  $email_body = $email_body . "Name: " . $name . "<br>";
+  $email_body = $email_body .  "Email: " . $email . "<br>";
   $email_body = $email_body .  "Message: " . $message;
 
 
-  // TO DO: Send Email
+  $mail->SetFrom($email, $name);
+  $address = "orders@shirts4mike.com";
+  $mail->AddAddress($address, "Shirts 4 Mike");
+
+
+  $mail->Subject="Shirst 4 Mike Contact Form Submission | " . $name;
+
+  $mail->MsgHTML($email_body);
+
+  if(!$mail->Send()){
+    echo "There was an error sending your message: " . $mail->ErrorInfo;
+    exit;
+  }
 
   header("Location: contact.php?status=thanks");
   exit;
-}
-?>
+}?>
 <?php
 $pageTitle = "Contact Mike";
 $section = "contact";
